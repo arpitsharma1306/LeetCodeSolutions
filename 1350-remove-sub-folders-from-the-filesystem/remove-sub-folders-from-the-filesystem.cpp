@@ -5,7 +5,7 @@ public:
 
         vector<string>result;
 
-        for(string currFolder:folder){
+        for(string& currFolder:folder){
             bool isSubFolder=false;
             string tempFolder=currFolder;
 
