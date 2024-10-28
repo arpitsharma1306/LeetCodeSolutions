@@ -1,25 +1,36 @@
+#pragma GCC target ("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx")
+#pragma GCC optimize ("O3", "unroll-loops")
+#pragma GCC optimize ("-ffloat-store")
+
+auto init = []() { 
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
+    return 0;
+} ();
+
 class Solution {
 public:
     int longestSquareStreak(vector<int>& nums) {
-        int result=0;
-        int n=nums.size();
-        sort(nums.begin(),nums.end(),greater<int>());
-        unordered_set<int>st(nums.begin(),nums.end());
-        
-        for(int &num:nums){
-            int count=0;
-            int _sqrt=sqrt(num);
-            int val=num;
-            while(_sqrt*_sqrt==val && st.find(_sqrt)!=st.end()){
-                count++;
-                val=_sqrt;
-                _sqrt=sqrt(_sqrt);
+        constexpr int N{100'000};
+        std::array<bool, N+1> ns{};
+
+        for(const int i : nums) { ns[i] = true; }
+
+        int ans{-1};
+
+        for(size_t i{0}; i<N; ++i) {
+            if (ns[i] == false) { continue; }
+
+            int len{0};
+            size_t index{i};
+            while(index < N && ns[index]) {
+                ++len;
+                index = index * index;
             }
-            result=max(result,count);
+
+            if (len > 1) { ans = std::max(ans, len); }
         }
 
-
-        return result==0?-1:result+1;
-
+        return ans;
     }
 };
