@@ -23,10 +23,10 @@ public:
         if (rightHeight == -1)
             return -1;
 
-        if (abs(rightHeight - leftHeight) > 1)
+        if (!(abs(rightHeight - leftHeight) <= 1))
             return -1;
 
-        return 1 + max(leftHeight, rightHeight);
+        return max(leftHeight, rightHeight) + 1;
     }
     bool isBalanced(TreeNode* root) { return solve(root) != -1; }
 };
