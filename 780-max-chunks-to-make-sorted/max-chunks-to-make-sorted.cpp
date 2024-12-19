@@ -6,7 +6,7 @@ public:
         int max_seen = -1;
         for (int i = 0; i < n; i++) {
             max_seen = max(max_seen, arr[i]);
-            if (max_seen <= i)
+            if (max_seen == i)
                 chunks++;
         }
 
