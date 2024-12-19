@@ -4,13 +4,14 @@ public:
         if(n==1) return 1;
         if(n==2) return 2;
 
-        vector<int>v(n);
-        v[0]=1;
-        v[1]=2;
+        
+        int prev1=1,prev2=2;
         for(int i=2;i<n;i++){
-            v[i]=v[i-1]+v[i-2];
+            int temp=prev2;
+            prev2=prev2+prev1;
+            prev1=temp;
         }
 
-        return v[n-1];
+        return prev2;
     }
 };
