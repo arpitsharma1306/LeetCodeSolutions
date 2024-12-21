@@ -1,28 +1,16 @@
 class Solution {
 public:
-    int n;
-    long long t[100001][2]; // 0 for odd 1 for even
-    typedef long long ll;
-    ll solve(vector<int>&nums,int idx,bool isEven){
-        if(idx>=n) return 0;
+    long long maxAlternatingSum(vector<int>& nums) {
+        int n=nums.size();
+        vector<vector<long>>t(n+1,vector<long>(2,0)); //0:even 1:odd
 
-        if(t[idx][isEven]!=-1){
-            return t[idx][isEven];
+        for(int i=1;i<n+1;i++){
+            //even length then last element odd position par hoga so -
+            t[i][0] = max(t[i-1][1]-nums[i-1],t[i-1][0]);
+            //odd length then last element even position par hoga so +
+            t[i][1] = max(t[i-1][0]+nums[i-1],t[i-1][1]);
         }
 
-        ll skip = solve(nums,idx+1,isEven);
-
-        int val = nums[idx];
-        if(!isEven) val = -val;
-
-        ll take = solve(nums,idx+1,!isEven) + val;
-
-        return t[idx][isEven] = max(skip,take);
-    }
-
-    long long maxAlternatingSum(vector<int>& nums) {
-        n=nums.size();
-        memset(t,-1,sizeof(t));
-        return solve(nums,0,true);
+        return max(t[n][0],t[n][1]);
     }
 };
