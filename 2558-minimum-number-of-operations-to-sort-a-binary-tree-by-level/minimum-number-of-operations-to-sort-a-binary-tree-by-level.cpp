@@ -11,6 +11,27 @@
  */
 class Solution {
 public:
+    int minSwaps(vector<int>&arr){
+        int n=arr.size();
+        map<int,int>mp;
+        vector<int>temp=arr;
+        sort(temp.begin(),temp.end());
+        for(int i=0;i<n;i++){
+            mp[temp[i]]=i;
+        }
+        int cnt=0;
+        for(int i=0;i<n;){
+            int idx=mp[arr[i]];
+            if(idx==i){
+                i++;
+            }
+            else{
+                swap(arr[idx],arr[i]);
+                cnt++;
+            }
+        }
+        return cnt;
+    }
     int minimumOperations(TreeNode* root) {
         queue<TreeNode*>q;
         q.push(root);
@@ -25,19 +46,7 @@ public:
                 if(node->left) q.push(node->left);
                 if(node->right) q.push(node->right);
             }
-            int n=arr.size();
-            for(int i=0;i<n-1;i++){
-                int minIdx=i;
-                for(int j=i+1;j<n;j++){
-                    if(arr[j]<arr[minIdx]){
-                        minIdx=j;
-                    }
-                }
-                if(minIdx!=i){
-                    cnt++;
-                    swap(arr[minIdx],arr[i]);
-                }
-            }
+            cnt+=minSwaps(arr);
         }
 
         return cnt;
