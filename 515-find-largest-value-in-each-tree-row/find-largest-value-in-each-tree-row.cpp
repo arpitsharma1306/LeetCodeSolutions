@@ -23,7 +23,7 @@ public:
             for(int i=0;i<sz;i++){
                 TreeNode* node=q.front();
                 q.pop();
-                if(node!=NULL && node->val>maxi) maxi=node->val;
+                if(node->val>maxi) maxi=node->val;
                 if(node->left) q.push(node->left);
                 if(node->right) q.push(node->right);
             }
