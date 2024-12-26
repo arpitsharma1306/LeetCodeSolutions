@@ -1,23 +1,25 @@
 class Solution {
 public:
     int n;
-    map<string,int>mp;
-    int solve(vector<int>&nums,int target, int idx,int currSum){
+    int S;
+    int solve(vector<int>&nums,int target, int idx,int currSum,vector<vector<int>>&t){
         if(idx>=n){
             if(currSum==target) return 1;
             else return 0;
         }
-        string key = to_string(idx)+"_"+to_string(currSum);
-        if(mp.count(key)){
-            return mp[key];
+        
+        if(t[idx][currSum+S]!=-1){
+            return t[idx][currSum+S];
         }
-        int plus = solve(nums,target,idx+1,currSum+nums[idx]);
-        int minus = solve(nums,target,idx+1,currSum-nums[idx]);
+        int plus = solve(nums,target,idx+1,currSum+nums[idx],t);
+        int minus = solve(nums,target,idx+1,currSum-nums[idx],t);
 
-        return mp[key]=plus+minus;
+        return t[idx][currSum+S]=plus+minus;
     }
     int findTargetSumWays(vector<int>& nums, int target) {
         n=nums.size();
-        return solve(nums,target,0,0);
+        S = accumulate(begin(nums),end(nums),0); // sum of the vector
+        vector<vector<int>>t(n+1,vector<int>(2*S+1,-1));
+        return solve(nums,target,0,0,t);
     }
 };
