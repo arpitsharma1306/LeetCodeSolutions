@@ -12,15 +12,14 @@ public:
         if(a<k || b<k || c<k) return -1;
 
         int i=0,j=0,maxLen=0;
-        int requiredA = a - k, requiredB = b - k, requiredC = c - k;
         while(j<n){
-            if(s[j]=='a') requiredA--;
-            else if(s[j]=='b') requiredB--;
-            else if(s[j]=='c') requiredC--;
-            while(requiredA < 0 || requiredB < 0 || requiredC < 0){
-                if(s[i]=='a') requiredA++;
-                else if(s[i]=='b') requiredB++;
-                else if(s[i]=='c') requiredC++;
+            if(s[j]=='a') a--;
+            else if(s[j]=='b') b--;
+            else if(s[j]=='c') c--;
+            while(i<=j && (a<k || b<k || c<k)){
+                if(s[i]=='a') a++;
+                else if(s[i]=='b') b++;
+                else if(s[i]=='c') c++;
                 i++;
             }
             
