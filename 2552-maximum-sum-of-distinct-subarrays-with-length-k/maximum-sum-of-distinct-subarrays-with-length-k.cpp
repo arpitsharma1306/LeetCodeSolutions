@@ -2,28 +2,32 @@ class Solution {
 public:
     long long maximumSubarraySum(vector<int>& nums, int k) {
         int n = nums.size();
-        unordered_set<int> st; // To track distinct elements in the current window
-        int i = 0, j = 0;
-        long long maxSum = 0, currentSum = 0;
-
-        while (j < n) {
-            // Expand the window by adding nums[j]
-            while (st.find(nums[j]) != st.end() || (j - i + 1 > k)) {
-                // Remove elements to ensure all elements are distinct and within window size k
-                st.erase(nums[i]);
-                currentSum -= nums[i];
-                i++;
+        unordered_set<int> elements;
+        long long current_sum = 0;
+        long long max_sum = 0;
+        int begin = 0;
+        
+        for (int end = 0; end < n; end++) {
+            if (elements.find(nums[end]) == elements.end()) {
+                current_sum += nums[end];
+                elements.insert(nums[end]);
+                
+                if (end - begin + 1 == k) {
+                    max_sum = max(max_sum, current_sum);
+                    current_sum -= nums[begin];
+                    elements.erase(nums[begin]);
+                    begin++;
+                }
+            } else {
+                while (nums[begin] != nums[end]) {
+                    current_sum -= nums[begin];
+                    elements.erase(nums[begin]);
+                    begin++;
+                }
+                begin++;
             }
-            st.insert(nums[j]);
-            currentSum += nums[j];
-
-            // Check if the window has exactly k elements
-            if (j - i + 1 == k) {
-                maxSum = max(maxSum, currentSum);
-            }
-            j++;
         }
-
-        return maxSum;
+        
+        return max_sum;
     }
 };
