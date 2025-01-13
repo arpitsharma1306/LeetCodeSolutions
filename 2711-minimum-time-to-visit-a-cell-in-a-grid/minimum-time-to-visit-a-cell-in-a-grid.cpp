@@ -1,69 +1,49 @@
 class Solution {
 public:
+    vector<vector<int>> direction{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    #define P pair<int, pair<int, int>>
+
     int minimumTime(vector<vector<int>>& grid) {
         int m = grid.size();
         int n = grid[0].size();
-        
-        // Early exit if initial movement is impossible
-        if (grid[0][1] > 1 && grid[1][0] > 1) {
+
+        if (grid[0][1] > 1 && grid[1][0] > 1)
             return -1;
-        }
-
-        // Directional movements: right, down, left, up
-        const vector<pair<int, int>> dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
         
-        // Min-heap priority queue to process cells in order of minimum time
-        using T = tuple<int, int, int>; // (time, i, j)
-        priority_queue<T, vector<T>, greater<>> pq;
-        pq.emplace(0, 0, 0);
+        vector<vector<bool>> visited(m, vector<bool>(n, false));
+        priority_queue<P, vector<P>, greater<P>> pq;
         
-        // Distance matrix to track minimum times to reach each cell
-        vector<vector<int>> dist(m, vector<int>(n, numeric_limits<int>::max()));
-        dist[0][0] = 0;
-        
-        // Matrix to track visited cells
-        vector<vector<bool>> seen(m, vector<bool>(n, false));
-        seen[0][0] = true;
-
+        pq.push({grid[0][0], {0, 0}}); // Start at top-left corner
         while (!pq.empty()) {
-            auto [time, i, j] = pq.top();
+            // Get the current time, row, and column
+            int time = pq.top().first;
+            int row  = pq.top().second.first;
+            int col  = pq.top().second.second;
             pq.pop();
             
-            // Reached bottom-right cell
-            if (i == m - 1 && j == n - 1) {
+            // Reached destination
+            if (row == m - 1 && col == n - 1)
                 return time;
-            }
             
-            // Explore four adjacent directions
-            for (const auto& [dx, dy] : dirs) {
-                int x = i + dx;
-                int y = j + dy;
+            // Mark the current cell as visited
+            if (visited[row][col]) continue;
+            visited[row][col] = true;
+            
+            // Explore the neighboring cells
+            for (auto dir: direction) {
+                int r = row + dir[0];
+                int c = col + dir[1];
+                if (r < 0 || r >= m || c < 0 || c >= n || visited[r][c])
+                    continue;
                 
-                // Validate next cell is within grid boundaries
-                if (x >= 0 && x < m && y >= 0 && y < n && !seen[x][y]) {
-                    int nextTime = time + 1;
-                    
-                    // Adjust time if arriving before cell's minimum time
-                    if (nextTime < grid[x][y]) {
-                        int waitTime = grid[x][y] - nextTime;
-                        if (waitTime % 2 == 0) {
-                            nextTime = grid[x][y];
-                        } else {
-                            nextTime = grid[x][y] + 1;
-                        }
-                    }
-                    
-                    // If a shorter path to (x, y) is found
-                    if (nextTime < dist[x][y]) {
-                        dist[x][y] = nextTime;
-                        pq.emplace(nextTime, x, y);
-                        seen[x][y] = true;
-                    }
-                }
+                if (grid[r][c] <= time+1)
+                    pq.push({time+1, {r, c}});
+                else if ((grid[r][c]-time)%2==0)
+                    pq.push({grid[r][c]+1, {r, c}});
+                else
+                    pq.push({grid[r][c], {r, c}});
             }
         }
-        
-        // If the bottom-right cell is unreachable, return -1
         return -1;
     }
 };
