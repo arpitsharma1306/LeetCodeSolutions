@@ -1,36 +1,32 @@
 class Solution {
 public:
-    typedef pair<int, pair<int, int>> P;
-    vector<vector<int>>dirs = {{0,1},{1,0},{0,-1},{-1,0}};
     int minimumObstacles(vector<vector<int>>& grid) {
-        int m=grid.size();
-        int n=grid[0].size();
+        int m = grid.size(), n = grid[0].size();
+        vector<vector<int>> distance(m, vector<int>(n, INT_MAX));
+        deque<pair<int, int>> dq;
 
-        vector<vector<int>>result(m,vector<int>(n,INT_MAX));
-        priority_queue<P,vector<P>,greater<P>>pq;
-        result[0][0]=0;
-        pq.push({0,{0,0}}); //{weight,{i,j}}
+        distance[0][0] = 0;
+        dq.push_front({0, 0});
+        vector<pair<int, int>> directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
 
-        while(!pq.empty()){
-            auto curr=pq.top();
-            pq.pop();
-            int d=curr.first;
-            int i=curr.second.first;
-            int j=curr.second.second;
-
-            for(auto& dir:dirs){
-                int x=i+dir[0],y=j+dir[1];
-                if(x<0 || x>m-1 || y<0 || y>n-1){
-                    continue;
-                }
-                if(d+grid[x][y]<result[x][y]){
-                    result[x][y]=d+grid[x][y];
-                    pq.push({d+grid[x][y],{x,y}});
+        while (!dq.empty()) {
+            auto [x, y] = dq.front();
+            dq.pop_front();
+            for (auto [dx, dy] : directions) {
+                int nx = x + dx, ny = y + dy;
+                if (nx >= 0 && nx < m && ny >= 0 && ny < n) {
+                    int newDist = distance[x][y] + grid[nx][ny];
+                    if (newDist < distance[nx][ny]) {
+                        distance[nx][ny] = newDist;
+                        if (grid[nx][ny] == 0) {
+                            dq.push_front({nx, ny});
+                        } else {
+                            dq.push_back({nx, ny});
+                        }
+                    }
                 }
             }
         }
-
-        return result[m-1][n-1];
-
+        return distance[m-1][n-1];
     }
 };
