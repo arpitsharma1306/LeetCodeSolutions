@@ -1,24 +1,22 @@
 class Solution {
 public:
     vector<int> findThePrefixCommonArray(vector<int>& A, vector<int>& B) {
-        int n=A.size();
-        unordered_set<int>st1;
-        unordered_set<int>st2;
-        unordered_set<int>common;
-        vector<int>result(n);
-        int count=0;
-        for(int i=0;i<n;i++){
-            st1.insert(A[i]);
-            st2.insert(B[i]); 
-            if(st1.find(B[i])!=st1.end() && common.find(B[i])==common.end()){
-                count++;
-                common.insert(B[i]);
+        int n = A.size();
+        vector<int> count(n + 1, 0); // Frequency array for elements 1 to n
+        vector<int> result(n, 0);    // Resultant prefix common array
+        int prefixCommon = 0;             // Count of common elements in the current prefix
+
+        for (int i = 0; i < n; ++i) {
+            // Process element from A
+            if (++count[A[i]] == 2) {
+                ++prefixCommon;
             }
-            if(st2.find(A[i])!=st2.end() && common.find(A[i])==common.end()){
-                count++;
-                common.insert(A[i]);
+            // Process element from B
+            if (++count[B[i]] == 2) {
+                ++prefixCommon;
             }
-            result[i]=count;
+            // Set the current prefix common count
+            result[i] = prefixCommon;
         }
 
         return result;
