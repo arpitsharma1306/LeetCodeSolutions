@@ -6,10 +6,7 @@ public:
         int j=0;
         for(int i=0;i<n;i++){
             if(j==m) break;
-            char ch=(str1[i]-'a'+1)%26 + 'a';
-            if((str1[i]==str2[j]) || (ch==str2[j])){
-                j++;
-            }
+            if((str2[j]-str1[i]+26)%26<=1) j++;
         }
 
         if(j==m) return true;
