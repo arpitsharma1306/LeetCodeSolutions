@@ -2,10 +2,7 @@ class Solution {
 public:
     int minFlips(int a, int b, int c) {
         int count = 0;
-
-        int bit_length = sizeof(int) * 8; // Typically 32 bits for an int
-
-        for (int i = 0; i < bit_length; ++i) {
+        for (int i = 0; i < 32; ++i) {
             bool a_bit = a & (1 << i);
             bool b_bit = b & (1 << i);
             bool c_bit = c & (1 << i);
