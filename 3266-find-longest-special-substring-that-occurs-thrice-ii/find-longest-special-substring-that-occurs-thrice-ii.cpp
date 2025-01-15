@@ -19,9 +19,10 @@ public:
 
         int result=0;
         for(int i=0;i<26;i++){
-            for(int j=n-1;j>0;j--){
-                matrix[i][j]=matrix[i][j]+matrix[i][j+1];
-                if(matrix[i][j]>=3){
+            int cumSum=0;
+            for(int j=n;j>0;j--){
+                cumSum+=matrix[i][j];
+                if(cumSum>=3){
                     result=max(result,j);
                     break;
                 }
