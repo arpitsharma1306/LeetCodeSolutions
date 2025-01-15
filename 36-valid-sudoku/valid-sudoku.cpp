@@ -1,119 +1,29 @@
 class Solution {
 public:
     bool isValidSudoku(vector<vector<char>>& board) {
+        unordered_set<char> rows[9];
+        unordered_set<char> cols[9];
+        unordered_set<char> boxes[9];
 
-        unordered_set<int>st;
-        for(int i=0;i<9;i++){
-            for(int j=0;j<9;j++){
-                if(board[i][j]=='.') continue;
-                int num=board[i][j]-'a';
-                if(st.count(num)) return false;
-                st.insert(num);
-            }
-            st.clear();
-        }
+        for (int r = 0; r < 9; ++r) {
+            for (int c = 0; c < 9; ++c) {
+                if (board[r][c] == '.') {
+                    continue;
+                }
 
-        for(int j=0;j<9;j++){
-            for(int i=0;i<9;i++){
-                if(board[i][j]=='.') continue;
-                int num=board[i][j]-'a';
-                if(st.count(num)) return false;
-                st.insert(num);
-            }
-            st.clear();
-        }
+                char value = board[r][c];
+                int boxIndex = (r / 3) * 3 + (c / 3);
 
-        for(int i=0;i<3;i++){
-            for(int j=0;j<3;j++){
-                if(board[i][j]=='.') continue;
-                int num=board[i][j]-'a';
-                if(st.count(num)) return false;
-                st.insert(num);
+                if (rows[r].count(value) || cols[c].count(value) || boxes[boxIndex].count(value)) {
+                    return false;
+                }
+
+                rows[r].insert(value);
+                cols[c].insert(value);
+                boxes[boxIndex].insert(value);
             }
         }
-        st.clear();
 
-        for(int i=0;i<3;i++){
-            for(int j=3;j<6;j++){
-                if(board[i][j]=='.') continue;
-                int num=board[i][j]-'a';
-                if(st.count(num)) return false;
-                st.insert(num);
-            }
-        }
-        st.clear();
-
-        for(int i=0;i<3;i++){
-            for(int j=6;j<9;j++){
-                if(board[i][j]=='.') continue;
-                int num=board[i][j]-'a';
-                if(st.count(num)) return false;
-                st.insert(num);
-            }
-        }
-        st.clear();
-
-        for(int i=3;i<6;i++){
-            for(int j=0;j<3;j++){
-                if(board[i][j]=='.') continue;
-                int num=board[i][j]-'a';
-                if(st.count(num)) return false;
-                st.insert(num);
-            }
-        }
-        st.clear();
-
-        for(int i=3;i<6;i++){
-            for(int j=3;j<6;j++){
-                if(board[i][j]=='.') continue;
-                int num=board[i][j]-'a';
-                if(st.count(num)) return false;
-                st.insert(num);
-            }
-        }
-        st.clear();
-
-        for(int i=3;i<6;i++){
-            for(int j=6;j<9;j++){
-                if(board[i][j]=='.') continue;
-                int num=board[i][j]-'a';
-                if(st.count(num)) return false;
-                st.insert(num);
-            }
-        }
-        st.clear();
-
-        for(int i=6;i<9;i++){
-            for(int j=0;j<3;j++){
-                if(board[i][j]=='.') continue;
-                int num=board[i][j]-'a';
-                if(st.count(num)) return false;
-                st.insert(num);
-            }
-        }
-        st.clear();
-
-        for(int i=6;i<9;i++){
-            for(int j=3;j<6;j++){
-                if(board[i][j]=='.') continue;
-                int num=board[i][j]-'a';
-                if(st.count(num)) return false;
-                st.insert(num);
-            }
-        }
-        st.clear();
-
-        for(int i=6;i<9;i++){
-            for(int j=6;j<9;j++){
-                if(board[i][j]=='.') continue;
-                int num=board[i][j]-'a';
-                if(st.count(num)) return false;
-                st.insert(num);
-            }
-        }
-        st.clear();
-
-        return true;
-        
+        return true;        
     }
 };
