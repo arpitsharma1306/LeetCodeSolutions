@@ -1,17 +1,17 @@
 class MinStack {
 public:
     vector<pair<int,int>>stack;
-    long long ptr;
+    int ptr;
     MinStack() {
-        ptr=0;
+        ptr=-1;
     }
     
     void push(int val) {
-        if(ptr>0){
-            if(val<stack[ptr-1].second){
+        if(ptr>=0){
+            if(val<stack[ptr].second){
                 stack.push_back({val,val});
             }else{
-                stack.push_back({val,stack[ptr-1].second});
+                stack.push_back({val,stack[ptr].second});
             }
         }else{
             stack.push_back({val,val});
@@ -25,11 +25,11 @@ public:
     }
     
     int top() {
-        return stack[ptr-1].first;
+        return stack[ptr].first;
     }
     
     int getMin() {
-        return stack[ptr-1].second;
+        return stack[ptr].second;
     }
 };
 
