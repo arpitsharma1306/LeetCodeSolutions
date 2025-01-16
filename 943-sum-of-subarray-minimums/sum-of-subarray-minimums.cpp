@@ -1,26 +1,47 @@
 class Solution {
 public:
+    vector<int>getNSL(vector<int>&arr,int n){
+        vector<int>result(n,-1);
+        stack<int>st;
+        for(int i=0;i<n;i++){
+            while(!st.empty() && arr[st.top()]>=arr[i]){
+                st.pop();
+            }
+            if(!st.empty()) result[i]=st.top();
+            st.push(i);
+        }
+
+        return result;
+    }
+
+    vector<int>getNSR(vector<int>&arr,int n){
+        vector<int>result(n,n);
+        stack<int>st;
+        for(int i=n-1;i>=0;i--){
+            while(!st.empty() && arr[st.top()]>arr[i]){
+                st.pop();
+            }
+            if(!st.empty()) result[i]=st.top();
+            st.push(i);
+        }
+
+        return result;
+    }
     int sumSubarrayMins(vector<int>& arr) {
         int n=arr.size();
-        long long sum=0;
-        for(int i=0;i<n;i++){
-            int count_left=0;
-            int count_right=0;
-            int left_i=i-1;
-            int right_i=i+1;
-            while(left_i>=0 && arr[i]<=arr[left_i]){
-                count_left++;
-                left_i--;
-            }
-            while(right_i<n && arr[i]<arr[right_i]){
-                right_i++;
-                count_right++;
-            }
+        vector<int>NSL = getNSL(arr,n);
+        vector<int>NSR = getNSR(arr,n);
 
-            long long val=(count_left+1)*(count_right+1);
-            sum+=val*arr[i];
+        long long sum=0;
+        int mod=1e9+7;
+
+        for(int i=0;i<n;i++){
+            long long ls = i-NSL[i];
+            long long rs = NSR[i]-i;
+            long long total_ways = ls*rs;
+            sum+=(total_ways*arr[i])%mod;
         }
-        const int MOD = 1000000007;
-        return sum%MOD;
+
+        return sum%mod;
     }
 };
