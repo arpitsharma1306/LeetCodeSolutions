@@ -2,12 +2,13 @@ class Solution {
 public:
     bool primeSubOperation(vector<int>& nums) {
         int n=nums.size();
+        int max_val = *std::max_element(nums.begin(), nums.end());
     
-        vector<bool> isPrime(1000, true);
+        vector<bool> isPrime(max_val+1, true);
         isPrime[0] = isPrime[1] = false; // 0 and 1 are not prime
-        for (int i = 2; i < 1000; ++i) {
+        for (int i = 2; i < max_val; ++i) {
             if (isPrime[i]) {
-                for (int j = i * i; j < 1000; j += i) {
+                for (int j = i * i; j < max_val; j += i) {
                     isPrime[j] = false;
                 }
             }
