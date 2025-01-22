@@ -1,28 +1,35 @@
 class Solution {
 public:
-    int strangePrinter(string s) {
-        int n = s.size();
-        if (n == 0) return 0;
+    int n;
+    vector<vector<int>>t;
+    int solve(int l,int r,string &s){
+        if(l==r) return 1;
+        if(l>r) return 0;
 
-        // DP table: dp[i][j] represents the minimum turns to print the substring s[i..j]
-        vector<vector<int>> dp(n+1, vector<int>(n+1, 0));
+        int i=l+1;
+        while(i<=r && s[l]==s[i]){
+            i++;
+        }
+        if(i==r+1) return 1;
 
-        // Fill the DP table
-        for (int len = 1; len <= n; len++) { // Length of substring
-            for (int i = 0; i + len - 1 < n; i++) {
-                int j = i + len - 1; // Endpoint of the substring
+        if(t[l][r]!=-1){
+            return t[l][r];
+        }
+        int basic = 1 + solve(i,r,s);
 
-                dp[i][j] = dp[i + 1][j] + 1; // Initial assumption: one more turn than dp[i+1][j]
-                
-                // Check for matching characters within the substring
-                for (int k = i + 1; k <= j; k++) {
-                    if (s[k] == s[i]) {
-                        dp[i][j] = min(dp[i][j], dp[i][k - 1] + (k + 1 <= j ? dp[k + 1][j] : 0));
-                    }
-                }
-            }
+        int greedy = INT_MAX;
+        for(int j=i;j<=r;j++){
+            if(s[j]==s[l]){
+                int ans = solve(i,j-1,s) + solve(j,r,s);
+                greedy = min(greedy,ans);
+            } 
         }
 
-        return dp[0][n - 1]; // Minimum turns to print the entire string
+        return t[l][r] = min(basic,greedy);
+    }
+    int strangePrinter(string s) {
+        n=s.size();
+        t.resize(n+1,vector<int>(n+1,-1));
+        return solve(0,n-1,s);
     }
 };
