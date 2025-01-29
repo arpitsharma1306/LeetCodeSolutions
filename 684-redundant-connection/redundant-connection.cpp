@@ -1,50 +1,58 @@
+class DSU{
+public:
+    vector<int>parent;
+    vector<int>rank;
+    DSU(int n){
+        parent.resize(n+1);
+        rank.resize(n+1);
+       for(int i=1;i<=n;i++){
+        parent[i]=i;
+        rank[i]=0;
+       }
+    }
+
+    int find(int x){
+        if(x==parent[x]){
+            return x;
+        }
+        return parent[x]=find(parent[x]);
+    }
+
+    void Union(int x,int y){
+        int x_parent = find(x);
+        int y_parent = find(y);
+
+        if(x_parent==y_parent) return;
+
+        if(rank[x_parent]>rank[y_parent]){
+            parent[y_parent] = x_parent;
+        }else if(rank[y_parent]>rank[x_parent]){
+            parent[x_parent] = y_parent;
+        }else{
+            parent[y_parent] = x_parent;
+            rank[x_parent]++; 
+        }
+
+        return;
+    }
+};
+
 class Solution {
 public:
-    int n;
-    bool bfs(unordered_map<int,vector<int>>&adj,int u,int v){
-        queue<int>q;
-        q.push(u);
-        vector<bool>visit(n+1,false);
-        visit[u]=true;
-        while(!q.empty()){
-            int node=q.front();
-            q.pop();
-            if(node==v) return true;
-
-            for(auto &child:adj[node]){
-                if(!visit[child]){
-                    visit[child]=true;
-                    q.push(child);
-                }
-            }
-        }
-
-        return false;
-    }
     vector<int> findRedundantConnection(vector<vector<int>>& edges) {
-        n=edges.size();
-        unordered_map<int,vector<int>>adj;
-        vector<bool>visited(n+1,false);
+        int n=edges.size();
+        DSU dsu(n);
 
-        for(auto& edge:edges){
-            int u=edge[0], v=edge[1];
-            if(visited[u] && visited[v]){
-                if(bfs(adj,u,v)){
-                    return {u,v};
-                }else{
-                    adj[u].push_back(v);
-                    adj[v].push_back(u);
-                }
-
+        for(auto &edge:edges){
+            int u=edge[0];
+            int v=edge[1];
+            if(dsu.find(u)==dsu.find(v)){
+                return edge;
             }else{
-                visited[u]=true;
-                visited[v]=true;
-                adj[u].push_back(v);
-                adj[v].push_back(u);
+                dsu.Union(u,v);
             }
-
         }
 
-        return {-1,-1};
+        return {};
     }
 };
