@@ -2,12 +2,8 @@ class Solution {
 public:
     bool isArraySpecial(vector<int>& nums) {
         int n=nums.size();
-        if(n==1) return true;
-        int isOdd=(nums[0]%2);
-        for(int i=1;i<n;i++){
-            cout<<isOdd<<" ";
-            if(isOdd==(nums[i]%2)) return false;
-            isOdd=1-isOdd;
+        for(int i=0;i<n-1;i++){
+            if(nums[i]%2==nums[i+1]%2) return false;
         }
 
         return true;
