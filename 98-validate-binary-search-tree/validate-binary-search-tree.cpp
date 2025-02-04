@@ -6,26 +6,21 @@
  *     TreeNode *right;
  *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
  *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left),
- * right(right) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
 class Solution {
 public:
-    bool isValid(TreeNode* root, long minVal, long maxVal) {
+    bool validate(TreeNode* node,TreeNode* minnode, TreeNode* maxnode){
+        if(!node) return true;
 
-        if (root == NULL) {
-            return true;
-        }
+        if(minnode && (minnode->val >= node->val)) return false;
 
-        if (root->val >= maxVal || root->val <= minVal) {
-            return false;
-        }
+        if(maxnode && (maxnode->val <= node->val)) return false;
 
-        return isValid(root->left, minVal, root->val) &&
-               isValid(root->right, root->val, maxVal);
+        return validate(node->left,minnode,node) && validate(node->right,node,maxnode);
     }
     bool isValidBST(TreeNode* root) {
-        return isValid(root, LONG_MIN, LONG_MAX);
+        return validate(root,nullptr,nullptr);
     }
 };
