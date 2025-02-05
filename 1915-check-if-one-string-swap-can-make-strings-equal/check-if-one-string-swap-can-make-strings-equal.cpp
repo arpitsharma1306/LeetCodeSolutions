@@ -8,10 +8,9 @@ public:
                 idx=i;
             }else if(s1[i]!=s2[i] && idx!=-1){
                 swap(s1[i],s1[idx]);
-                return s1==s2;
+                break;
             }
         }
-        if(idx!=-1) return false;
-        return true;
+        return s1==s2;
     }
 };
