@@ -11,36 +11,24 @@
  */
 class Solution {
 public:
-    vector<int>inorder;
-    void inordertraverse(TreeNode* root){
-        if(!root) return;
-        inordertraverse(root->left);
-        inorder.push_back(root->val);
-        inordertraverse(root->right);
+    int sum = 0; // Global sum tracker
+
+    void reverseInorder(TreeNode* root) {
+        if (!root) return;
+
+        // Process right subtree first (greater values)
+        reverseInorder(root->right);
+
+        // Accumulate sum and update the node
+        sum += root->val;
+        root->val = sum;
+
+        // Process left subtree
+        reverseInorder(root->left);
     }
 
-    void solve(TreeNode* root,unordered_map<int,int>&mp){
-        if(!root) return;
-
-        int value = mp[root->val];
-        root->val=value;
-
-        solve(root->left,mp);
-        solve(root->right,mp);
-    }
-
-    TreeNode* bstToGst(TreeNode* root) { 
-        inordertraverse(root);
-        unordered_map<int,int>mp;
-        int sum=0;
-        int n=inorder.size();
-        for(int r=n-1;r>=0;r--){
-            sum+=inorder[r];
-            mp[inorder[r]]=sum;
-        }
-
-        solve(root,mp);
-
+    TreeNode* bstToGst(TreeNode* root) {
+        reverseInorder(root);
         return root;
     }
 };
