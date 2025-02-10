@@ -6,27 +6,26 @@
  *     TreeNode *right;
  *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
  *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left),
- * right(right) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
 class Solution {
 public:
-    void solve(TreeNode*& root, int val) {
-        if (!root) {
-            root = new TreeNode(val);
-            return;
+    TreeNode* solve(TreeNode*& root,int value){
+        if(!root){
+            root = new TreeNode(value);
+            return root;
         }
 
-        if (root->val > val)
-            solve(root->left, val);
-        else
-            solve(root->right, val);
-    }
-    TreeNode* insertIntoBST(TreeNode* root, int val) {
-
-        solve(root, val);
+        if(root->val>value){
+            solve(root->left,value);
+        }else{
+            solve(root->right,value);
+        }
 
         return root;
+    }
+    TreeNode* insertIntoBST(TreeNode* root, int val) {
+        return solve(root,val);
     }
 };
