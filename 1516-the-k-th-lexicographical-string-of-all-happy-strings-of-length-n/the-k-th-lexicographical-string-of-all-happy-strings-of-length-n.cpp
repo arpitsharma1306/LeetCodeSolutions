@@ -1,54 +1,28 @@
 class Solution {
 public:
-    void solve(int n,unordered_set<string>&result,string s,vector<string>&ans){
-        if(s.length()==n && result.find(s)==result.end()){
-            result.insert(s);
-            ans.push_back(s);
+    string ans;
+    void solve(int len,int n,int& cnt,vector<char>&v,string& s){
+        if(len==n){
+            if(--cnt==0){
+                ans=s;
+            }
             return;
         }
 
-        if(s.empty()){
-            string a1="a";
-            string b1="b";
-            string c1="c";
-            solve(n,result,a1,ans);
-            solve(n,result,b1,ans);
-            solve(n,result,c1,ans);
-        }else{
-            if(s[s.size()-1]=='a'){
-                s+='b';
-                solve(n,result,s,ans);
+        for(int i=0;i<3;i++){
+            if(len==0 || v[i]!=s.back()){
+                s.push_back(v[i]);
+                solve(len+1,n,cnt,v,s);
                 s.pop_back();
-                s+='c';
-                solve(n,result,s,ans);
-                s.pop_back();
-            }else if(s[s.size()-1]=='b'){
-                s+='a';
-                solve(n,result,s,ans);
-                s.pop_back();
-                s+='c';
-                solve(n,result,s,ans);
-                s.pop_back();
-            }else if(s[s.size()-1]=='c'){
-                s+='b';
-                solve(n,result,s,ans);
-                s.pop_back();
-                s+='a';
-                solve(n,result,s,ans);
-                s.pop_back();
+                if(cnt==0) return;
             }
         }
-        return;
     }
     string getHappyString(int n, int k) {
-        unordered_set<string>result;
-        vector<string>ans;
+        vector<char>v = {'a','b','c'};
+        ans="";
         string s="";
-        solve(n,result,s,ans);
-        sort(begin(ans),end(ans));
-
-        if(ans.size()<k) return "";
-
-        return ans[k-1];
+        solve(0,n,k,v,s);
+        return ans;
     }
 };
