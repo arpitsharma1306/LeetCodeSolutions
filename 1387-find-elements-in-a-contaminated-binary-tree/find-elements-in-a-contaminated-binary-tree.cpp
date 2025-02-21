@@ -11,41 +11,28 @@
  */
 class FindElements {
 public:
-    TreeNode* root;
+    unordered_set<int>st;
     void solve(TreeNode* root,int value){
         if(root==NULL){
             return;
         }
 
         root->val = value;
+        st.insert(value);
         if(root->left) solve(root->left, 2*value + 1);
         if(root->right) solve(root->right, 2*value + 2);
 
         return;
     }
-    FindElements(TreeNode* node) {
-        root=node;
+    FindElements(TreeNode* root) {
         root->val=0;
+        st.insert(0);
         if(root->left) solve(root->left,1);
         if(root->right) solve(root->right,2);
     }
     
-    bool traverse(TreeNode* root,int target){
-        if(!root){
-            return false;
-        }
-        if(root->val==target){
-            return true;
-        }
-
-        bool left = traverse(root->left,target);
-        bool right = traverse(root->right,target);
-
-        return left||right;
-    }
-
     bool find(int target) {
-        return traverse(root,target);
+        return st.count(target);
     }
 };
 
