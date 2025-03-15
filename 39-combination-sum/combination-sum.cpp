@@ -1,32 +1,26 @@
 class Solution {
 public:
-    vector<vector<int>>answer;
-    void solve(vector<int>& candidates,int idx,int target,vector<int>output,int sum){
-        if(target==sum){
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        vector<vector<int>> answer;
+        vector<int> output;
+        sort(candidates.begin(), candidates.end()); // Sort to optimize and avoid unnecessary calls
+        solve(candidates, 0, target, output, answer);
+        return answer;
+    }
+
+    void solve(vector<int>& candidates, int idx, int target, vector<int>& output, vector<vector<int>>& answer) {
+        if (target == 0) {
             answer.push_back(output);
             return;
         }
-        if(target<sum){
-            return;
-        }
-        
-        for(int i=idx;i<candidates.size();i++){
-            if (candidates[i] > target-sum) {
-                break; 
+
+        for (int i = idx; i < candidates.size(); i++) {
+            if (candidates[i] > target) {
+                break; // Since candidates are sorted, no need to check further
             }
             output.push_back(candidates[i]);
-            solve(candidates,i,target,output,sum+candidates[i]);
-            output.pop_back();
+            solve(candidates, i, target - candidates[i], output, answer); // Reuse same element
+            output.pop_back(); // Backtrack
         }
-
-        return;
-    }
-    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
-        sort(begin(candidates),end(candidates));
-        vector<int>output;
-        solve(candidates,0,target,output,0);
-        
-
-        return answer;
     }
 };
