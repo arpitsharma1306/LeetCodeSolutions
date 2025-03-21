@@ -27,9 +27,6 @@ public:
     }
     int coinChange(vector<int>& coins, int amount) {
         int n=coins.size();
-        sort(coins.begin(),coins.end(),[](int x,int y){
-            return x>y;
-        });
         memset(dp,-1,sizeof(dp));
         int ans = solve(coins,amount,0,0);
 
