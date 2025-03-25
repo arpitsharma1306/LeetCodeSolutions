@@ -1,48 +1,25 @@
 class Solution {
 public:
     bool checkValidCuts(int n, vector<vector<int>>& rectangles) {
-        sort(begin(rectangles),end(rectangles));
-        int lines=0;
-        int i=0, j=0;
-        while(i<rectangles.size() && j<n){
-            if(rectangles[i][0]<j && rectangles[i][2]>j){
-                j=rectangles[i][2];
-                i++;
-            }else if(rectangles[i][0]>=j){
-                lines++;
-                j=rectangles[i][2];
-                i++;
-            }else if(rectangles[i][2]<=j){
-                i++;
-            }else{
-                i++;
-                j=rectangles[i][2];
-            }
-        }
-        if(lines>=3) return true;
-        cout<<lines<<" ";
-        i=0, j=0, lines=0;
-        sort(begin(rectangles),end(rectangles),[](vector<int>&a, vector<int>&b){
-            return a[1]<b[1];
+        return checkCuts(rectangles, 0, 2, n) || checkCuts(rectangles, 1, 3, n);
+    }
+
+private:
+    bool checkCuts(vector<vector<int>>& rectangles, int start, int end, int n) {
+        sort(rectangles.begin(), rectangles.end(), [&](const vector<int>& a, const vector<int>& b) {
+            return a[start] < b[start];
         });
 
-        while(i<rectangles.size() && j<n){
-            if(rectangles[i][1]<j && rectangles[i][3]>j){
-                j=rectangles[i][3];
-                i++;
-            }else if(rectangles[i][1]>=j){
+        int lines = 0, j = 0;
+        for (int i = 0; i < rectangles.size() && j < n; i++) {
+            if (rectangles[i][start] >= j) {
                 lines++;
-                j=rectangles[i][3];
-                i++;
-            }else if(rectangles[i][3]<=j){
-                i++;
-            }else{
-                i++;
-                j=rectangles[i][3];
+                j = rectangles[i][end];
+            } else if (rectangles[i][end] > j) {
+                j = rectangles[i][end];
             }
         }
-        if(lines>=3) return true;
-        cout<<lines<<" ";
-        return false;
+        
+        return lines >= 3;
     }
 };
