@@ -1,68 +1,104 @@
+#include <vector>
+#include <queue>
+#include <algorithm>
+
+using namespace std;
+
 class Solution {
 public:
     int m, n;
-    int bfs(vector<vector<int>>& grid, int num, vector<vector<bool>>& visited) {
-        vector<vector<int>> dirs = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
-        queue<pair<int, int>> q;
-        int count = 0;
-        
-        if (grid[0][0] < num) {
-            q.push({0, 0});
-            visited[0][0] = true;
-            count++;
-        } else {
-            return 0;
-        }
+    vector<int> parent;
+    vector<int> size;
 
-        while (!q.empty()) {
-            auto [x, y] = q.front();
-            q.pop();
-            for (auto& dir : dirs) {
-                int x_ = x + dir[0], y_ = y + dir[1];
-                if (x_ >= 0 && y_ >= 0 && x_ < m && y_ < n && !visited[x_][y_] && grid[x_][y_] < num) {
-                    q.push({x_, y_});
-                    visited[x_][y_] = true;
-                    count++;
-                }
-            }
+    int find(int u) {
+        if (parent[u] != u) {
+            parent[u] = find(parent[u]);
         }
-        return count;
+        return parent[u];
+    }
+
+    void unite(int u, int v) {
+        int pu = find(u);
+        int pv = find(v);
+        if (pu != pv) {
+            if (size[pu] < size[pv]) {
+                swap(pu, pv);
+            }
+            parent[pv] = pu;
+            size[pu] += size[pv];
+        }
     }
 
     vector<int> maxPoints(vector<vector<int>>& grid, vector<int>& queries) {
-        m = grid.size(), n = grid[0].size();
+        m = grid.size();
+        n = grid[0].size();
         int k = queries.size();
-        vector<pair<int, int>> sorted(k);
-        for (int i = 0; i < k; i++) {
-            sorted[i] = {queries[i], i};
-        }
-        sort(begin(sorted), end(sorted));
+        vector<int> answer(k, 0);
 
-        vector<int> answer(k);
+        // Flatten the grid and sort cells along with their coordinates
+        vector<pair<int, pair<int, int>>> cells;
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                cells.emplace_back(grid[i][j], make_pair(i, j));
+            }
+        }
+        sort(cells.begin(), cells.end());
+
+        // Sort queries with their original indices
+        vector<pair<int, int>> sortedQueries;
+        for (int i = 0; i < k; ++i) {
+            sortedQueries.emplace_back(queries[i], i);
+        }
+        sort(sortedQueries.begin(), sortedQueries.end());
+
+        // Initialize DSU
+        parent.resize(m * n);
+        size.resize(m * n, 1);
+        for (int i = 0; i < m * n; ++i) {
+            parent[i] = i;
+        }
+
         vector<vector<bool>> visited(m, vector<bool>(n, false));
         priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>, greater<>> pq;
         pq.push({grid[0][0], {0, 0}});
         visited[0][0] = true;
         int total = 0;
 
-        for (int i = 0; i < k; i++) {
-            int num = sorted[i].first;
-            while (!pq.empty() && pq.top().first < num) {
-                auto [val, pos] = pq.top();
+        int cellIndex = 0;
+        for (auto& query : sortedQueries) {
+            int num = query.first;
+            int idx = query.second;
+
+            while (cellIndex < cells.size() && cells[cellIndex].first < num) {
+                auto [val, pos] = cells[cellIndex];
                 auto [x, y] = pos;
-                pq.pop();
-                total++;
-                vector<vector<int>> dirs = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
-                for (auto& dir : dirs) {
-                    int x_ = x + dir[0], y_ = y + dir[1];
-                    if (x_ >= 0 && y_ >= 0 && x_ < m && y_ < n && !visited[x_][y_]) {
-                        visited[x_][y_] = true;
-                        pq.push({grid[x_][y_], {x_, y_}});
-                    }
+                int flatPos = x * n + y;
+                visited[x][y] = true;
+
+                // Check and unite with adjacent cells
+                if (x > 0 && visited[x - 1][y]) {
+                    unite(flatPos, (x - 1) * n + y);
                 }
+                if (x < m - 1 && visited[x + 1][y]) {
+                    unite(flatPos, (x + 1) * n + y);
+                }
+                if (y > 0 && visited[x][y - 1]) {
+                    unite(flatPos, x * n + (y - 1));
+                }
+                if (y < n - 1 && visited[x][y + 1]) {
+                    unite(flatPos, x * n + (y + 1));
+                }
+
+                cellIndex++;
             }
-            answer[sorted[i].second] = total;
+
+            if (visited[0][0] && grid[0][0] < num) {
+                answer[idx] = size[find(0)];
+            } else {
+                answer[idx] = 0;
+            }
         }
+
         return answer;
     }
 };
