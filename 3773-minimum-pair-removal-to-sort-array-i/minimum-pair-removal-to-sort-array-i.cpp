@@ -1,41 +1,40 @@
 class Solution {
 public:
-    int minimumPairRemoval(std::vector<int>& nums) {
-        std::list<int> v(nums.begin(), nums.end());
-        int count = 0;
-
-        while (!std::is_sorted(v.begin(), v.end())) {
-            auto it1 = v.begin();
-            auto it2 = std::next(it1);
-
-            auto minIt1 = it1;
-            auto minIt2 = it2;
-            int minSum = *it1 + *it2;
-
-            // Find adjacent pair with minimum sum
-            while (it2 != v.end()) {
-                int sum = *it1 + *it2;
-                if (sum < minSum) {
-                    minIt1 = it1;
-                    minIt2 = it2;
-                    minSum = sum;
-                }
-                ++it1;
-                ++it2;
+    bool isNondecreasing(vector<int>& nums) {
+        for (int i = 1; i < nums.size(); i++) {
+            if (nums[i] < nums[i - 1]) {
+                return false;
             }
-
-            // Compute the sum *before* modifying the list
-            int sum = *minIt1 + *minIt2;
-
-            // Erase in correct order: minIt2 first, then minIt1
-            // Because erasing minIt1 would invalidate minIt2
-            v.erase(minIt2);
-            auto insertPos = v.erase(minIt1); // erase minIt1 and get insert position
-            v.insert(insertPos, sum);
-
-            ++count;
         }
-
-        return count;
+        return true;
+    }
+    int minimumPairRemoval(vector<int>& nums) {
+        int ops = 0;
+        while (!isNondecreasing(nums)) {
+            int min_sum = INT_MAX;
+            int index = -1;
+            //step 1 -  Find the smallest consecutive pair by their sum.
+            for (int i = 0; i < nums.size() - 1; i++) {
+                int sum = nums[i] + nums[i + 1];
+                if (sum < min_sum) {
+                    min_sum = sum;
+                    index = i;
+                }
+            }
+            vector<int>temp;
+            // step 2 - Merge this pair and repeat until the array is non-decreasing.
+            for(int i = 0;i<nums.size();i++){
+                if(i==index){
+                    temp.push_back(nums[i]+nums[i+1]);
+                    i++;
+                }else{
+                    temp.push_back(nums[i]);
+                }
+            }
+            nums = temp;
+           // step 3 - Track the number of operations.
+            ++ops;
+        }
+        return ops;
     }
 };
