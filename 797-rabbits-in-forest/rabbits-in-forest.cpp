@@ -13,12 +13,6 @@ public:
                 ans+=freq;
                 continue;
             }
-            if(num==1 && freq>2){
-                int a = static_cast<int>(std::ceil(static_cast<double>(freq) / 2));
-                int b = a*2;
-                ans+=b;
-                continue;
-            }
             if(freq>num+1){
                 int a = static_cast<int>(std::ceil(static_cast<double>(freq) / (num+1)));
                 int b = (num+1)*a;
