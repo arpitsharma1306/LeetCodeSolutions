@@ -1,7 +1,6 @@
 class Solution {
 public:
-    #define mod 1000000007 
-    int mod_add(int a, int b) {a = a % mod; b = b % mod; return (((a + b) % mod) + mod) % mod;}
+    #define MOD 1000000007 
     int lengthAfterTransformations(string s, int t) {
         vector<int>nums(26,0);
         for(char &ch:s){
@@ -12,13 +11,13 @@ public:
             vector<int>cnt(26,0);
             for(int i=0;i<26;i++){
                 if(i==25 && nums[i]>0){
-                    cnt[0] = mod_add(cnt[0],nums[i]);
-                    cnt[1] = mod_add(cnt[1],nums[i]);
-                }else{
+                    cnt[0] = (cnt[0]+nums[i])%MOD;
+                    cnt[1] = (cnt[1]+nums[i])%MOD;
+                }
+                else{
                     if(i<25){
-                        cnt[i+1] = mod_add(cnt[i+1],nums[i]);
+                        cnt[i+1] = (cnt[i+1]+nums[i])%MOD;
                     }
-                    
                 }
                 
             }
@@ -30,8 +29,8 @@ public:
 
         int ans=0;
         for(int i=0;i<26;i++){
-            ans = mod_add(ans,nums[i]);
-            ans=ans%mod;
+            ans = (ans+nums[i])%MOD;
+
         } 
 
         return ans;
