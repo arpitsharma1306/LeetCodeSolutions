@@ -14,47 +14,45 @@ public:
     int minSwaps(vector<int>& nums) {
         int n = nums.size();
 
-        // Build a min-heap based on (digit_sum, number)
-        priority_queue<P, vector<P>, greater<P>> pq;
+        // Create and sort pairs (digit_sum, num)
+        vector<P> temp;
+        temp.reserve(n); // Pre-allocate memory
         for (int num : nums) {
-            pq.push({digit_sum(num), num});
+            temp.emplace_back(digit_sum(num), num);
         }
+        sort(temp.begin(), temp.end());
 
-        // Sorted version of nums based on digit sum
+        // Extract sorted numbers
         vector<int> sorted;
-        while (!pq.empty()) {
-            sorted.push_back(pq.top().second);
-            pq.pop();
+        sorted.reserve(n);
+        for (auto& p : temp) {
+            sorted.push_back(p.second);
         }
 
-        // Map each value in sorted array to its indices using a queue
-        unordered_map<int, queue<int>> valueIndices;
+        // Map each value to its indices in the sorted array
+        unordered_map<int, vector<int>> val_to_indices;
         for (int i = 0; i < n; ++i) {
-            valueIndices[sorted[i]].push(i);
+            val_to_indices[sorted[i]].push_back(i);
         }
 
-        // Create a position mapping from original array to sorted one
+        // Assign target positions using pointers
+        unordered_map<int, int> val_to_ptr;
         vector<int> targetPos(n);
         for (int i = 0; i < n; ++i) {
             int val = nums[i];
-            targetPos[i] = valueIndices[val].front();
-            valueIndices[val].pop();
+            targetPos[i] = val_to_indices[val][val_to_ptr[val]++];
         }
 
-        // Count minimum swaps by detecting cycles
+        // Calculate minimum swaps using cycle detection
         vector<bool> visited(n, false);
         int swaps = 0;
-
         for (int i = 0; i < n; ++i) {
             if (visited[i] || targetPos[i] == i) continue;
-
-            int j = i, cycleSize = 0;
-            while (!visited[j]) {
+            int cycleSize = 0;
+            for (int j = i; !visited[j]; j = targetPos[j]) {
                 visited[j] = true;
-                j = targetPos[j];
                 ++cycleSize;
             }
-
             swaps += (cycleSize - 1);
         }
 
