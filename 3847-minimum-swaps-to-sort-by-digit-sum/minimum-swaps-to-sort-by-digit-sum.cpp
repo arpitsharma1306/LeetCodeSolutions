@@ -1,10 +1,8 @@
 class Solution {
 public:
-    using P = pair<int, int>;
-
-    int digit_sum(int n) {
+    int findsum(int n) {
         int sum = 0;
-        while (n) {
+        while (n > 0) {
             sum += n % 10;
             n /= 10;
         }
@@ -13,49 +11,40 @@ public:
 
     int minSwaps(vector<int>& nums) {
         int n = nums.size();
+        vector<int> v = nums;
 
-        // Create and sort pairs (digit_sum, num)
-        vector<P> temp;
-        temp.reserve(n); // Pre-allocate memory
-        for (int num : nums) {
-            temp.emplace_back(digit_sum(num), num);
-        }
-        sort(temp.begin(), temp.end());
+        sort(v.begin(), v.end(), [&](int a, int b) {
+            int sumA = findsum(a);
+            int sumB = findsum(b);
+            if (sumA == sumB) return a < b;
+            return sumA < sumB;
+        });
 
-        // Extract sorted numbers
-        vector<int> sorted;
-        sorted.reserve(n);
-        for (auto& p : temp) {
-            sorted.push_back(p.second);
-        }
-
-        // Map each value to its indices in the sorted array
-        unordered_map<int, vector<int>> val_to_indices;
+        unordered_map<int, int> mp;
         for (int i = 0; i < n; ++i) {
-            val_to_indices[sorted[i]].push_back(i);
+            mp[nums[i]] = i;
         }
 
-        // Assign target positions using pointers
-        unordered_map<int, int> val_to_ptr;
-        vector<int> targetPos(n);
-        for (int i = 0; i < n; ++i) {
-            int val = nums[i];
-            targetPos[i] = val_to_indices[val][val_to_ptr[val]++];
-        }
-
-        // Calculate minimum swaps using cycle detection
         vector<bool> visited(n, false);
-        int swaps = 0;
+        int cnt = 0;
+
         for (int i = 0; i < n; ++i) {
-            if (visited[i] || targetPos[i] == i) continue;
-            int cycleSize = 0;
-            for (int j = i; !visited[j]; j = targetPos[j]) {
+            if (visited[i] || v[i] == nums[i]) continue;
+
+            int cycle_size = 0;
+            int j = i;
+
+            while (!visited[j]) {
                 visited[j] = true;
-                ++cycleSize;
+                j = mp[v[j]];
+                cycle_size++;
             }
-            swaps += (cycleSize - 1);
+
+            if (cycle_size > 1) {
+                cnt += (cycle_size - 1);
+            }
         }
 
-        return swaps;
+        return cnt;
     }
 };
