@@ -1,24 +1,20 @@
 class Solution {
 public:
     int maxFreqSum(string s) {
-        vector<int> freq(26, 0);
-        for (char c : s) {
-            freq[c - 'a']++;
+        vector<int> num(26,0);
+        for(int i=0; i<s.size(); i++)
+        {
+            num[s[i] - 'a']++;
         }
-
-        // Vowels: a, e, i, o, u → indices: 0, 4, 8, 14, 20
-        int maxVowel = 0;
-        for (int i : {0, 4, 8, 14, 20}) {
-            maxVowel = max(maxVowel, freq[i]);
+        int max_cons = 0, max_vow = 0;
+        for(int i=0; i<26; i++)
+        {
+            if( i == 0 || i ==4 || i == 8 || i == 14 || i == 20)
+                max_vow = max(max_vow , num[i]);
+            else
+                max_cons = max(max_cons , num[i]);
         }
-
-        int maxConsonant = 0;
-        for (int i = 0; i < 26; ++i) {
-            if (i != 0 && i != 4 && i != 8 && i != 14 && i != 20) {
-                maxConsonant = max(maxConsonant, freq[i]);
-            }
-        }
-
-        return maxVowel + maxConsonant;
+        return max_vow + max_cons;
+        
     }
 };
