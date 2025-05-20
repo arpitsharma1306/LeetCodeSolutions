@@ -1,28 +1,24 @@
 class Solution {
 public:
-    void findmaxVowel(int &maxVowel,vector<int>&freq){
-        maxVowel=max(maxVowel,freq[0]);
-        freq[0]=0;
-        maxVowel=max(maxVowel,freq[4]);
-        freq[4]=0;
-        maxVowel=max(maxVowel,freq[8]);
-        freq[8]=0;
-        maxVowel=max(maxVowel,freq[14]);
-        freq[14]=0;
-        maxVowel=max(maxVowel,freq[20]);
-        freq[20]=0;
-    }
     int maxFreqSum(string s) {
-        int n=s.size();
-        vector<int>freq(26,0);
-        for(int i=0;i<n;i++){
-            freq[s[i]-'a']++;
+        vector<int> freq(26, 0);
+        for (char c : s) {
+            freq[c - 'a']++;
         }
 
-        int maxVowel=0;
-        findmaxVowel(maxVowel,freq);
-        sort(freq.rbegin(),freq.rend());
+        // Vowels: a, e, i, o, u → indices: 0, 4, 8, 14, 20
+        int maxVowel = 0;
+        for (int i : {0, 4, 8, 14, 20}) {
+            maxVowel = max(maxVowel, freq[i]);
+        }
 
-        return maxVowel+freq[0];
+        int maxConsonant = 0;
+        for (int i = 0; i < 26; ++i) {
+            if (i != 0 && i != 4 && i != 8 && i != 14 && i != 20) {
+                maxConsonant = max(maxConsonant, freq[i]);
+            }
+        }
+
+        return maxVowel + maxConsonant;
     }
 };
