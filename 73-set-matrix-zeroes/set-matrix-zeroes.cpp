@@ -2,22 +2,52 @@ class Solution {
 public:
     void setZeroes(vector<vector<int>>& matrix) {
         int m=matrix.size(), n=matrix[0].size();
-        vector<pair<int,int>>st;
+
+        bool firstRowImpact = false;
+        bool firstColImpact = false;
+
         for(int i=0;i<m;i++){
-            for(int j=0;j<n;j++){
-                if(matrix[i][j]==0) st.push_back({i,j});
+            if(matrix[i][0]==0){
+                firstColImpact = true;
+                break;
             }
         }
 
-        for(auto &it:st){
-            int row=it.first, col=it.second;
-            for(int j=0;j<n;j++){
-                matrix[row][j]=0;
+        for(int j=0;j<n;j++){
+            if(matrix[0][j]==0){
+                firstRowImpact = true;
+                break;
             }
+        }
+
+        for(int i=1;i<m;i++){
+            for(int j=1;j<n;j++){
+                if(matrix[i][j]==0){
+                    matrix[i][0]=0;
+                    matrix[0][j]=0;
+                }
+            }
+        }
+
+        for(int i=1;i<m;i++){
+            for(int j=1;j<n;j++){
+                if(matrix[i][0]==0 || matrix[0][j]==0){
+                    matrix[i][j]=0;
+                }
+            }
+        }
+
+        if(firstRowImpact){
+            for(int j=0;j<n;j++){
+                matrix[0][j]=0;
+            }
+        }
+
+        if(firstColImpact){
             for(int i=0;i<m;i++){
-                matrix[i][col]=0;
+                matrix[i][0]=0;
             }
         }
-
+        
     }
 };
