@@ -1,8 +1,8 @@
 class Solution {
 public:
     int m,n;
-    vector<vector<int>> apple;
-    vector<vector<vector<int>>>t;
+    int apple[55][55];
+    int t[55][55][12];
     long long mod = 1e9+7;
     int solve(int i,int j,int k){
         if(apple[i][j]<k) return 0;
@@ -34,8 +34,8 @@ public:
     }
     int ways(vector<string>& pizza, int k) {
         m=pizza.size(), n=pizza[0].size();
-        apple.resize(m+1,vector<int>(n+1,0));
-        t.resize(m + 1, vector<vector<int>>(n + 1, vector<int>(k + 1, -1)));
+        memset(apple,0,sizeof(apple));
+        memset(t,-1,sizeof(t));
         for(int i=m-1;i>=0;i--){
             for(int j=n-1;j>=0;j--){
                 apple[i][j]=apple[i][j+1];
