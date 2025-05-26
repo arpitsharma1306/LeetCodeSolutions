@@ -1,36 +1,34 @@
 class Solution {
 public:
     int longestPalindrome(vector<string>& words) {
-        int n=words.size();
-        bool doubly=false;
-        unordered_map<string,int>mp;
-        for(auto& word:words){
+        unordered_map<string, int> mp;
+        for (const string& word : words) {
             mp[word]++;
         }
 
-        int cnt=0;
+        int cnt = 0;
+        bool has_center = false;
 
-        for(auto& word:words){
-            string finding = string() + word[1] + word[0];
-            if(word[0]!=word[1] && mp.find(finding)!=mp.end()){
-                int word_cnt = min(mp[finding],mp[word]);
-                cnt += 4 * word_cnt;
-                mp.erase(word);
-                mp.erase(finding);
-                continue;
-            }else if(word[0]==word[1]){
-                if(mp[word]%2==1){
-                    doubly=true;
-                }
-                int word_cnt = mp[word]/2;
-                cnt += 4* word_cnt;
-                mp.erase(word);
-                continue;
+        for (auto& [word, freq] : mp) {
+            string reversed = string() + word[1] + word[0];
+
+            if (word[0] == word[1]) {
+                // Palindromic word like "aa"
+                cnt += (freq / 2) * 4;
+                if (freq % 2 == 1) has_center = true;
+            } else if (mp.find(reversed) != mp.end()) {
+                // Pair "ab" with "ba"
+                int pair_count = min(freq, mp[reversed]);
+                cnt += pair_count * 4;
+                // Mark both as used
+                mp[reversed] = 0;
             }
-            mp.erase(word);
+            // Mark current word as processed
+            mp[word] = 0;
         }
-        if(doubly) cnt+=2;
-        
+
+        if (has_center) cnt += 2;
+
         return cnt;
     }
 };
