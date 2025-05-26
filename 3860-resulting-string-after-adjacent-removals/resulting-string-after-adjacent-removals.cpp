@@ -1,24 +1,21 @@
 class Solution {
 public:
     string resultingString(string s) {
-        string result="";
-        int i=0;
-        int n=s.size();
-        while(i<n){
-            if(result.size()==0){
-                result+=s[i];
-                i++;
-                continue;
+        string sb;
+        
+        for (char ch : s) {
+            if (!sb.empty()) {
+                char top = sb.back();
+                int diff = abs(top - ch);
+                
+                if (diff == 1 || diff == 25) {
+                    sb.pop_back();
+                    continue;
+                }
             }
-
-            if(abs(result.back()-s[i])%24==1){
-                result.pop_back();
-            }else{
-                result+=s[i];
-            }
-            i++;
+            sb.push_back(ch);
         }
-
-        return result;
+        
+        return sb;
     }
 };
