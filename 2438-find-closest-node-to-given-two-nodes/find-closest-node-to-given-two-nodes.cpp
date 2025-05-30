@@ -11,12 +11,6 @@ public:
     }
     int closestMeetingNode(vector<int>& edges, int node1, int node2) {
         int n=edges.size()+1;
-        // unordered_map<int,int>adj(n);
-        // for(int i=0;i<n-1;i++){
-        //     if(edges[i]==-1) continue;
-        //     adj[i].push_back(edges[i]);
-        // }
-
         vector<int>dist1(n,-1);
         vector<int>dist2(n,-1);
         vector<bool>vis(n,false);
