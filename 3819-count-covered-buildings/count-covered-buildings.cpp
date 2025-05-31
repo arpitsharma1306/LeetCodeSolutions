@@ -1,35 +1,45 @@
 class Solution {
 public:
     int countCoveredBuildings(int n, vector<vector<int>>& buildings) {
-        vector<vector<int>>x(n+1);
-        vector<vector<int>>y(n+1);
+        // x_to_ys[i] stores all y-values of buildings that share the same x = i
+        vector<vector<int>> x_to_ys(n + 1);
+        // y_to_xs[j] stores all x-values of buildings that share the same y = j
+        vector<vector<int>> y_to_xs(n + 1);
 
-        for(auto &build:buildings){
-            x[build[0]].push_back(build[1]);
-            y[build[1]].push_back(build[0]);
+        // Populate mappings
+        for (auto& building : buildings) {
+            int x = building[0], y = building[1];
+            x_to_ys[x].push_back(y);
+            y_to_xs[y].push_back(x);
         }
 
-        for(auto& y_vec:x){
-            sort(begin(y_vec),end(y_vec));
+        // Sort each list to easily find min and max
+        for (auto& ys : x_to_ys) {
+            sort(ys.begin(), ys.end());
         }
-        for(auto& x_vec:y){
-            sort(begin(x_vec),end(x_vec));
+        for (auto& xs : y_to_xs) {
+            sort(xs.begin(), xs.end());
         }
 
-        int cnt=0;
+        int coveredCount = 0;
 
-        for(auto& build:buildings){
-            if(x[build[0]].size()<3 || y[build[1]].size()<3) continue;
+        for (auto& building : buildings) {
+            int x = building[0], y = building[1];
 
-            int low_y=x[build[0]][0], high_y=x[build[0]][x[build[0]].size()-1];
-            int low_x=y[build[1]][0], high_x=y[build[1]][y[build[1]].size()-1];
+            // Need at least three points along the same x or y to form a boundary
+            if (x_to_ys[x].size() < 3 || y_to_xs[y].size() < 3) continue;
 
-            if(low_x<build[0] && build[0]<high_x && low_y<build[1] && build[1]<high_y){
-                cnt++;
+            int minY = x_to_ys[x].front();
+            int maxY = x_to_ys[x].back();
+            int minX = y_to_xs[y].front();
+            int maxX = y_to_xs[y].back();
+
+            // The building is covered if it lies strictly inside a rectangle formed by other buildings
+            if (minX < x && x < maxX && minY < y && y < maxY) {
+                coveredCount++;
             }
         }
 
-        return cnt;
-
+        return coveredCount;
     }
 };
