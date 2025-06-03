@@ -1,52 +1,53 @@
 class Solution {
 public:
-    int maxCandies(vector<int>& status, vector<int>& candies, vector<vector<int>>& keys, vector<vector<int>>& containedBoxes, vector<int>& initialBoxes) {
-        int n=candies.size();
+    int maxCandies(vector<int>& status, vector<int>& candies, vector<vector<int>>& keys,
+                   vector<vector<int>>& containedBoxes, vector<int>& initialBoxes) {
+        int n = candies.size();
         int total = 0;
-        queue<int>q;
-        unordered_set<int>close;
-        unordered_set<int>avail_keys;
-        for(auto& idx:initialBoxes){
-            if(status[idx]==1) q.push(idx);
-            else close.insert(idx);
 
-            for(auto &key:keys[idx]){
-                avail_keys.insert(key);
+        queue<int> q;
+        vector<bool> hasKey(n, false);
+        vector<bool> visited(n, false);
+        unordered_set<int> closedBoxes;
+
+        for (int idx : initialBoxes) {
+            if (status[idx] == 1) {
+                q.push(idx);
+                visited[idx] = true;
+            } else {
+                closedBoxes.insert(idx);
             }
         }
 
-        while(!q.empty()){
+        while (!q.empty()) {
             int box = q.front();
             q.pop();
+
             total += candies[box];
 
-            for(auto &key:keys[box]){
-                avail_keys.insert(key);
-            }
-
-            for(auto &it:containedBoxes[box]){
-                if(status[it]==1){
-                    q.push(it);
-                } 
-                else if(status[it]==0 && avail_keys.find(it)!=avail_keys.end()){
-                    q.push(it);
-                    status[it]=1;
-                }
-                else{
-                    close.insert(it);
+            // Acquire new keys and open boxes if needed
+            for (int k : keys[box]) {
+                hasKey[k] = true;
+                if (closedBoxes.count(k)) {
+                    q.push(k);
+                    visited[k] = true;
+                    closedBoxes.erase(k);
                 }
             }
 
-            for(auto& it:close){
-                if(status[it]==0 && avail_keys.find(it)!=avail_keys.end()){
-                    status[it]=1;
-                    q.push(it);
+            // Open contained boxes
+            for (int b : containedBoxes[box]) {
+                if (visited[b]) continue;
+
+                if (status[b] == 1 || hasKey[b]) {
+                    q.push(b);
+                    visited[b] = true;
+                } else {
+                    closedBoxes.insert(b);
                 }
             }
         }
 
-
         return total;
-
     }
 };
