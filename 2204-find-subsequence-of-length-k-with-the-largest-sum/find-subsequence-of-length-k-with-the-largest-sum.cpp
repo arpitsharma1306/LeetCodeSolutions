@@ -1,25 +1,30 @@
 class Solution {
 public:
     vector<int> maxSubsequence(vector<int>& nums, int k) {
-        vector<int> temp = nums;
-        sort(rbegin(temp),rend(temp));
-        unordered_map<int,int>mp;
-        for(int i=0;i<k;i++){
-            mp[temp[i]]++;
-        }
-        
-        temp.clear();
-
-        for(int i=0;i<nums.size() && temp.size()<k;i++){
-            if(mp.count(nums[i])){
-                temp.push_back(nums[i]);
-                mp[nums[i]]--;
-                if(mp[nums[i]]==0){
-                    mp.erase(nums[i]);
-                }
-            }
+        vector<pair<int, int>> numsWithIndices;
+        for (int i = 0; i < nums.size(); i++) {
+            numsWithIndices.push_back({nums[i], i});
         }
 
-        return temp;
+        // Sort by value descending
+        sort(numsWithIndices.begin(), numsWithIndices.end(),
+             [](const pair<int, int>& a, const pair<int, int>& b) {
+                 return a.first > b.first;
+             });
+
+        // Take top k and sort by original index
+        vector<pair<int, int>> topK(numsWithIndices.begin(), numsWithIndices.begin() + k);
+        sort(topK.begin(), topK.end(),
+             [](const pair<int, int>& a, const pair<int, int>& b) {
+                 return a.second < b.second;
+             });
+
+        // Extract values
+        vector<int> result;
+        for (auto& p : topK) {
+            result.push_back(p.first);
+        }
+
+        return result;
     }
 };
