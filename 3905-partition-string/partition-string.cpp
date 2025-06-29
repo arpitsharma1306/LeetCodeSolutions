@@ -7,16 +7,13 @@ public:
         int i=0;
         string ans="";
         while(i<n){
-            ans.push_back(s[i]);
-            if(mp.count(ans)){
-                i++;
-            }
-            else{
+            ans+=s[i];
+            if(!mp.count(ans)){
                 result.push_back(ans);
                 mp[ans]++;
                 ans="";
-                i++;
             }
+            i++;
         }
         return result;
     }
