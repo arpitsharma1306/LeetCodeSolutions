@@ -1,29 +1,25 @@
-#include <vector>
-#include <unordered_set>
-#include <algorithm>
-
-using namespace std;
-
 class Solution {
 public:
     int maximumUniqueSubarray(vector<int>& nums) {
-        int n = nums.size();
-        unordered_set<int> seen;
-        int left = 0;
-        int currentSum = 0;
-        int maxSum = 0;
-        
-        for (int right = 0; right < n; ++right) {
-            while (seen.find(nums[right]) != seen.end()) {
-                currentSum -= nums[left];
-                seen.erase(nums[left]);
-                ++left;
+        int n=nums.size();
+        if(n==1) return nums[0];
+        int l=0,r=1;
+        unordered_set<int>st;
+        int sum=nums[0];
+        int ans = sum;
+        st.insert(nums[0]);
+        while(r<n){
+            while(!st.empty() && st.find(nums[r])!=st.end()){
+                st.erase(nums[l]);
+                sum-=nums[l];
+                l++;
             }
-            currentSum += nums[right];
-            seen.insert(nums[right]);
-            maxSum = max(maxSum, currentSum);
+            st.insert(nums[r]);
+            sum+=nums[r];
+            r++;
+            ans = max(ans,sum);
         }
-        
-        return maxSum;
+
+        return ans;
     }
 };
