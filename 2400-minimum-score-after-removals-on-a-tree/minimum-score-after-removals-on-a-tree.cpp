@@ -36,7 +36,7 @@ public:
     }
     int minimumScore(vector<int>& nums, vector<vector<int>>& edges) {
         n=nums.size();
-        adj.assign(n,{});
+        adj.resize(n);
         for(auto& edge:edges){
             int u=edge[0], v=edge[1];
             adj[u].push_back(v);
