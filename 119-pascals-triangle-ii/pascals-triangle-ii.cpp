@@ -1,18 +1,23 @@
 class Solution {
 public:
-    vector<int> getRow(int rowIndex) {
-        vector<int>pascal;
-        pascal.push_back(1);
-        for(int i=1;i<=rowIndex;i++){
-            vector<int>row(i+1);
-            row[0]=1,row[i]=1;
-            for(int j=1;j<i;j++){
-                row[j]=pascal[j-1]+pascal[j];
-            }
-            pascal=row;
+    long long ncr(int n,int r){
+        if(r>n-r){
+            r=n-r;
         }
+        long long res = 1;
+        for(int i=0;i<r;i++){
+            res = res * (n-i)/(i+1);
+        }
+        return res;
+    }
 
-        return pascal;
+    vector<int> getRow(int rowIndex) {
+        vector<int>ans(rowIndex+1);
+        ans[0]=ans[rowIndex]=1;
+        for(int i=1;i<rowIndex;i++){
+            ans[i] = (int)ncr(rowIndex,i);
+        }
+        return ans;
 
     }
 };
