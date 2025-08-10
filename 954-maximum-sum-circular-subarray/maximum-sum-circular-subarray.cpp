@@ -1,44 +1,32 @@
 class Solution {
 public:
-    int n;
-    int findMax(vector<int>& nums){
-        int sum = 0;
-        int maxi=0;
-        for(int i=0;i<n;i++){
-            sum+=nums[i];
-            maxi=max(maxi,sum);
-            if(sum<0) sum=0;
-        }
-
-        return maxi;
-    }
-
-    int findMin(vector<int>& nums){
-        int sum=0;
-        int mini=0;
-        for(int i=0;i<n;i++){
-            sum+=nums[i];
-            mini=min(mini,sum);
-            if(sum>0) sum=0;
-        }
-
-        return mini;
-    }
 
     int maxSubarraySumCircular(vector<int>& nums) {
-        n=nums.size();
+        int n=nums.size();
         bool negative = true;
+        int total = 0;
         for(int &num:nums){
+            total+=num;
             if(num>=0) negative=false;
         }
 
         if(negative) return *max_element(nums.begin(),nums.end());
 
-        int max_sum = findMax(nums);
-        int min_sum = findMin(nums);
-        int total = accumulate(nums.begin(),nums.end(),0);
+        int sum1 = 0, sum2 = 0;
+        int maxi=0, mini=0;;
 
-        return max(max_sum,total-min_sum);
+        for(int i=0;i<n;i++){
+            sum1+=nums[i];
+            sum2+=nums[i];
+            maxi=max(maxi,sum1);
+            mini=min(mini,sum2);
+
+            if(sum1<0) sum1=0;
+            if(sum2>0) sum2=0;
+
+        }
+
+        return max(maxi,total-mini);
 
     }
 };
