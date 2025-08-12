@@ -29,20 +29,7 @@ public:
         int m=powers.size();
         
         vector<int>ans;
-        // vector<long long>prod(m);
-        // prod[0]=powers[0];
-        // for(int i=1;i<m;i++){
-        //     prod[i] = prod[i-1]*powers[i];
-        // }
-        // for(auto &q:queries){
-        //     int left=q[0]-1, right=q[1];
-        //     if(left<0){
-        //         ans.push_back(prod[right]);
-        //     }else{
-        //         long long res = (prod[right]/prod[left])%mod;
-        //         ans.push_back(res);
-        //     }
-        // }
+        
 
         for(auto& q:queries){
             int left=q[0], right=q[1];
