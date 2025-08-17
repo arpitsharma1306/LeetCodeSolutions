@@ -1,50 +1,62 @@
 class Solution {
 public:
     int k;
-    // dp[idx][rem][even][odd][tight][started]
-    // idx <= 10 for 32-bit int; even, odd <= 10; rem < k (we size rem to 101 to be safe).
-    int dp[11][101][11][11][2][2];
-    string s;
+    // DP State: [index][even_count][odd_count][remainder][tight_constraint]
+    int dp[11][11][11][21][2];
+    string s; // Use a class member for the string to avoid passing it repeatedly
 
-    int solve(int idx, bool tight, int rem, int even, int odd, bool started) {
-        if (idx == (int)s.size()) {
-            // valid only if number started, divisible by k, and even==odd
-            return (started && rem == 0 && even == odd);
+    int solve(int idx, int even, int odd, int rem, bool tight, bool is_started) {
+        // Base case: we have processed all digits
+        if (idx == s.length()) {
+            // A beautiful integer must have at least one digit (is_started),
+            // have equal counts of even/odd digits, and be divisible by k.
+            return is_started && even > 0 && even == odd && rem == 0;
         }
 
-        int &memo = dp[idx][rem][even][odd][tight][started];
-        if (memo != -1) return memo;
+        // If this state is already computed, return the result
+        if (dp[idx][even][odd][rem][tight] != -1) {
+            return dp[idx][even][odd][rem][tight];
+        }
 
         int res = 0;
-        char limit = tight ? s[idx] : '9';
-        for (char c = '0'; c <= limit; ++c) {
-            int d = c - '0';
-            bool nt = tight && (c == limit);
+        // Determine the upper limit for the current digit
+        int limit = tight ? (s[idx] - '0') : 9;
 
-            if (!started && d == 0) {
-                // still skipping leading zeros; don't change rem/even/odd
-                res += solve(idx + 1, nt, 0, 0, 0, false);
+        for (int digit = 0; digit <= limit; ++digit) {
+            // If we haven't started the number and the current digit is 0,
+            // it's a leading zero. We continue to the next position without
+            // updating counts or remainder.
+            if (!is_started && digit == 0) {
+                res += solve(idx + 1, even, odd, rem, tight && (digit == limit), false);
             } else {
-                int nrem  = (rem * 10 + d) % k;
-                int neven = even + (d % 2 == 0);
-                int nodd  = odd  + (d % 2);
-                res += solve(idx + 1, nt, nrem, neven, nodd, true);
+                // Update counts and remainder for the new digit
+                int new_even = even + (digit % 2 == 0);
+                int new_odd = odd + (digit % 2 != 0);
+                int new_rem = (rem * 10 + digit) % k;
+                
+                // The new tight constraint is true only if the original was tight
+                // AND we are placing the highest possible digit.
+                bool new_tight = tight && (digit == limit);
+
+                res += solve(idx + 1, new_even, new_odd, new_rem, new_tight, true);
             }
         }
-        return memo = res;
+
+        return dp[idx][even][odd][rem][tight] = res;
     }
 
-    int countUpTo(const string &num) {
-        s = num;
+    int countBeautiful(int n) {
+        s = to_string(n);
         memset(dp, -1, sizeof(dp));
-        return solve(0, true, 0, 0, 0, false);
+        // Initial call: index 0, 0 even, 0 odd, 0 remainder, tight constraint is true, not started
+        return solve(0, 0, 0, 0, true, false);
     }
 
     int numberOfBeautifulIntegers(int low, int high, int k1) {
         k = k1;
-        // guard: low-1 can be negative; to_string handles it, but we only count positives via `started`.
-        int end   = countUpTo(to_string(high));
-        int start = countUpTo(to_string(low - 1));
-        return end - start;
+        // The logic is to find count(high) - count(low - 1)
+        int count_high = countBeautiful(high);
+        int count_low = countBeautiful(low - 1);
+        return count_high - count_low;
     }
 };
