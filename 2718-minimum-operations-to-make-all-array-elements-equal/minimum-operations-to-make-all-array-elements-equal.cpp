@@ -14,9 +14,8 @@ public:
         for(long long q:queries){
             int idx = lower_bound(nums.begin(),nums.end(),q)-nums.begin();
             long long oper = 0;
-            if(idx>0){
-                oper += ((long long)(q*idx) - prefix[idx]);
-            }
+            
+            oper += ((long long)(q*idx) - prefix[idx]);
             oper += ((prefix[n]-prefix[idx]) - (long long)(q*(n-idx)));
             ans.push_back(oper);
         }
