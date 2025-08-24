@@ -1,42 +1,20 @@
 class Solution {
 public:
     int longestSubarray(vector<int>& nums) {
-        int n=nums.size();
-        bool deleted = false, ones = false, zeros = false;
-        int maxlen = 0, len=0;
-        int i=0,j=0;
-        while(j<n){
-            if(nums[j]==1){
-                ones = true;
-                len++;
-                cout<<len<<" ";
-                maxlen = max(maxlen,len);
-                j++;
+        int left = 0, right = 0, zeroCount = 0, maxLen = 0;
+        while (right < nums.size()) {
+            if (nums[right] == 0) {
+                zeroCount++;
             }
-            else if(nums[j]==0 && deleted == false){
-                zeros = true;
-                if(len==0){
-                    j++;
-                    i=j;
-                    continue;
+            while (zeroCount > 1) {
+                if (nums[left] == 0) {
+                    zeroCount--;
                 }
-                deleted = true;
-                j++;
-                // maxlen = max(maxlen,len);
-            }else{
-                while(i<j && nums[i]!=0){
-                    i++;
-                    len--;
-                    cout<<len<<" ";
-                }
-                i++;
-                j++;
+                left++;
             }
+            maxLen = max(maxLen, right - left);
+            right++;
         }
-
-        if(!ones) return 0;
-        if(!deleted && !zeros) return n-1;
-
-        return maxlen;
+        return maxLen;
     }
 };
