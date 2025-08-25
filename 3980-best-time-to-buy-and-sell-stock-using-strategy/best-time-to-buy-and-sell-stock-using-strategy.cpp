@@ -17,14 +17,11 @@ public:
             if(strategy[i]!=1) profit += prices[i];
         }
         max_profit = max(max_profit,profit);
-        cout<<profit<<" ";
         for(int i=0;i<n-k;i++){
             profit +=  (prices[i]*strategy[i]);
-            cout<<profit<<" ";
             if(strategy[i+k]==-1) profit -= (prices[i+k]*strategy[i+k]);
             profit -= prices[i+k/2];
             if(strategy[i+k]!=1) profit += prices[i+k];
-            cout<<profit<<" ";
             max_profit = max(max_profit,profit); 
         }
 
