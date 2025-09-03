@@ -1,43 +1,32 @@
 class Solution {
 public:
+    static bool cmp(const vector<int>& a, const vector<int>& b) {
+        if (a[0] != b[0]) return a[0] < b[0];
+        return a[1] > b[1];
+    }
+    bool check(vector<int>p1,vector<int>p2,vector<vector<int>>& points){
+        
+        for(auto &point:points){
+            if(point==p1 || point==p2) continue;
+            if(p1[0]<=point[0] && point[0]<=p2[0] && p2[1]<=point[1] && point[1]<=p1[1]){
+                return false;
+            } 
+        }
+
+        return true;
+    }
     int numberOfPairs(vector<vector<int>>& points) {
-        int ans = 0;
-        int n = points.size();
-
-        for (int i = 0; i < n; i++) {
-            auto& pointA = points[i];
-            for (int j = 0; j < n; j++) {
-                vector<int> pointB = points[j];
-                if (i == j ||
-                    !(pointA[0] <= pointB[0] && pointA[1] >= pointB[1])) {
-                    continue;
-                }
-                if (n == 2) {
-                    ans++;
-                    continue;
-                }
-
-                bool illegal = false;
-                for (int k = 0; k < n; k++) {
-                    if (k == i || k == j) {
-                        continue;
-                    }
-
-                    auto& pointTmp = points[k];
-                    bool isXContained =
-                        pointTmp[0] >= pointA[0] && pointTmp[0] <= pointB[0];
-                    bool isYContained =
-                        pointTmp[1] <= pointA[1] && pointTmp[1] >= pointB[1];
-                    if (isXContained && isYContained) {
-                        illegal = true;
-                        break;
-                    }
-                }
-                if (!illegal) {
-                    ans++;
+        int n=points.size();
+        sort(points.begin(),points.end(),cmp);
+        int cnt = 0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<i;j++){
+                if(points[i][1]<=points[j][1] && check(points[j],points[i],points)){
+                    cnt++;
                 }
             }
         }
-        return ans;
+
+        return cnt;
     }
 };
