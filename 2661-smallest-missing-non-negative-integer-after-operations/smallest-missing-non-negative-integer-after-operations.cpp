@@ -1,14 +1,24 @@
 class Solution {
 public:
-	int findSmallestInteger(vector<int>& nums, int v) {
-		long long n = nums.size(), x, res = 0;
-		vector<int> rem(v, 0);
-		for (int i = 0; i < n; i++) {
-			x = ((nums[i] % v) + v) % v;
-			rem[x]++;
-		}
+    int findSmallestInteger(vector<int>& nums, int value) {
+        map<int,int>mp;
+        for(int &num:nums){
+            if(num<0){
+                num%=value;
+                num+=value;
+            }
+            mp[num%value]++;
+        }
+        int ans = 0;
+        for(int i=0;i<nums.size();i++){
+            if(mp[ans%value]>0){
+                mp[ans%value]--;
+            }else{
+                return ans;
+            }
+            ans++;
+        }
 
-		while (rem[res % v]--) res++;
-		return res;
-	}
+        return ans;
+    }
 };
