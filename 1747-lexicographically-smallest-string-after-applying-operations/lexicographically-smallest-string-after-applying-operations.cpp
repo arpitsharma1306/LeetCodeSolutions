@@ -1,46 +1,39 @@
-#include <bits/stdc++.h>
-using namespace std;
-
 class Solution {
 public:
-    unordered_set<string> st;
-
-    void addOperation(const string &node, int a, queue<string> &q) {
-        string temp = node;
-        for (int i = 1; i < (int)node.size(); i += 2) {
-            int digit = (node[i] - '0' + a) % 10;
-            temp[i] = '0' + digit;
+    unordered_set<string>st;
+    void adding(string node,int a,queue<string>&q){
+        for(int i=1;i<node.size();i+=2){
+            int digit = node[i]-'0';
+            int new_digit = (digit+a)%10;
+            node[i] = ('0'+new_digit);
         }
-        // Instead of modifying each odd position separately,
-        // we can directly generate one variant per BFS layer.
-        if (st.insert(temp).second) {
-            q.push(temp);
+        if(st.find(node)==st.end()){
+            q.push(node);
+            st.insert(node);
         }
     }
 
-    void rotateOperation(const string &s, int b, queue<string> &q) {
+    void rotating(string s,int b,queue<string>&q){
         int n = s.size();
-        b %= n;
-        string new_s = s.substr(n - b) + s.substr(0, n - b);
-        if (st.insert(new_s).second) {
+        b = b % n; 
+        string new_s  = s.substr(n - b) + s.substr(0, n - b);
+        if(st.find(new_s)==st.end()){
             q.push(new_s);
+            st.insert(new_s);
         }
     }
-
     string findLexSmallestString(string s, int a, int b) {
+        
         string res = s;
-        queue<string> q;
+        queue<string>q;
         q.push(s);
         st.insert(s);
-
-        while (!q.empty()) {
+        while(!q.empty()){
             string node = q.front();
             q.pop();
-
-            res = min(res, node);
-
-            addOperation(node, a, q);
-            rotateOperation(node, b, q);
+            res = min(res,node);
+            adding(node,a,q);
+            rotating(node,b,q);
         }
 
         return res;
